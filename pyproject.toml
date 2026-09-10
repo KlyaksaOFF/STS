@@ -1,0 +1,11 @@
+[project]
+name = "STS"
+version = "0.1.0"
+description = "Sample Telegram Shop"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiogram>=3.31.0",
+    "dotenv>=0.9.9",
+    "ruff>=0.16.6",
+]
