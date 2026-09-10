@@ -14,8 +14,8 @@ async def menu(message: types.Message, state: FSMContext):
 
 @router.callback_query(F.data == 'category')
 async def category(callback: CallbackQuery):
-    return await callback.message.answer('this is button - category')
+    return await callback.message.answer('this is button - category') #category take with your database in .env
 
 @router.callback_query(F.data == 'information')
 async def information(callback: CallbackQuery):
-    return await callback.message.answer('this is button - information')
+    return await callback.message.answer('this is button - information') #write information for your bot
