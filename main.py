@@ -8,8 +8,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-from handlers.keyboard import router as router_keyboard
 from handlers.answer import router as router_answer
+from handlers.keyboard import router as router_keyboard
 
 load_dotenv()
 TOKEN = (getenv("TOKEN"))
