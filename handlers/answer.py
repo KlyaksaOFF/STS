@@ -4,7 +4,8 @@ from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from database.repositories.shop import product_category_list
+from database.repositories.shop import product_categories, products_for_category_list
+
 router = Router()
 
 
@@ -22,10 +23,15 @@ async def menu(message: types.Message, state: FSMContext):
 @router.callback_query(F.data == 'category')
 async def category(callback: CallbackQuery, state: FSMContext):
     await state.clear()
-    category = await product_category_list()
-    buttons = []
-    keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
-    return await callback.message.answer('this is button - category', reply_markup=keyboard)  # category take with your database in .env
+    categories = await product_categories()
+    if categories:
+        buttons = []
+        for category in categories:
+            buttons.append([types.InlineKeyboardButton(text=category, callback_data=category)])
+        keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+        return await callback.message.answer('this is button - category.',
+                                             reply_markup=keyboard)  # category take with your database in .env
+    return await callback.message.answer('No found categories in your database.')
 
 
 @router.callback_query(F.data == 'information')
@@ -38,3 +44,23 @@ async def information(callback: CallbackQuery, state: FSMContext):
 async def unknow_message(message: Message, state: FSMContext):
     await state.clear()
     return await message.answer(f"I don't know this message '{message.text}', open menu - /menu")
+
+
+async def is_category(callback: types.CallbackQuery) -> bool:
+    categories = await product_categories()
+    return callback.data in categories
+
+
+@router.callback_query(is_category)
+async def handle_category(callback: types.CallbackQuery):
+    await callback.message.answer(f"Категория: {callback.data}")
+    products = await products_for_category_list(product_category=callback.data)
+    if products:
+        buttons = []
+        for product in products:
+            buttons.append([types.InlineKeyboardButton(text=product.product_name,
+                                                       callback_data=str(product.id))])
+        keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+        return await callback.message.answer('this is button - list products for select category.',
+                                             reply_markup=keyboard)  # category take with your database in .env
+    return await callback.message.answer('No found products in your database for select category..')
