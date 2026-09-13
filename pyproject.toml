@@ -9,4 +9,5 @@ dependencies = [
     "asyncpg>=0.31.0",
     "dotenv>=0.9.9",
     "ruff>=0.16.6",
+    "sqlalchemy>=2.0.52",
 ]
