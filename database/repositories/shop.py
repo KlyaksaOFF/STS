@@ -24,11 +24,19 @@ async def products_for_category_list(product_category):
     return result
 
 
+async def products_list_id():
+    async with async_session() as session:
+        filter_result = await session.execute(
+            select(Shop.id))
+
+        products_id = filter_result.scalars().all()
+    return products_id
+
+
 async def product_for_id(id):
     async with async_session() as session:
         filter_result = await session.execute(
-            select(Shop).filter_by(id=id)
-        )
+            select(Shop).filter_by(id=id))
 
-        product = filter_result.scalars().all()
+        product = filter_result.scalar_one_or_none()
     return product
